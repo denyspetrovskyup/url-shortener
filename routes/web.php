@@ -1,5 +1,7 @@
 <?php
 
+use AshAllenDesign\ShortURL\Classes\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('app');
+});
+
+Route::middleware('throttle:5')->post('/shorten', function (Request $request) {
+    $builder = new Builder();
+    $shortURLObject = $builder->destinationUrl($request->get('url'))->make();
+
+    return response()->json([
+        'shorten' => route('short-url.invoke', [$shortURLObject->url_key])
+    ]);
 });
