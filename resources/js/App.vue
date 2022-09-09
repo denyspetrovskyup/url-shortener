@@ -11,6 +11,8 @@
     </section>
 </template>
 <script>
+import {copyText} from 'vue3-clipboard'
+
 export default {
     data() {
         return {
@@ -34,7 +36,13 @@ export default {
                 }
                 return response.json()
             }).then((responseData) => {
-                alert(responseData.shorten);
+                if (confirm(`Result link: ${responseData.shorten}. Copy to clipboard?`)) {
+                    copyText(responseData.shorten, undefined, (error, event) => {
+                        if (error) {
+                            console.log(error)
+                        }
+                    })
+                }
                 this.url = ''
             }).catch(function (err) {
                 alert('Sorry has any error: ' + err)
